@@ -3,6 +3,7 @@ package org.java.lessons;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -19,13 +20,20 @@ public class Main {
                     SELECT c.name, c.country_id , r.name, c2.name  FROM countries c\s
                     JOIN regions r ON r.region_id = c.region_id\s
                     JOIN continents c2 ON c2.continent_id = r.continent_id\s
+                    WHERE c.name like ?
                     ORDER BY c.name;
                     """;
+
+            Scanner scan = new Scanner(System.in);
+            System.out.print("Search a country: ");
+            String searchString = scan.nextLine();
 
             try (PreparedStatement ps = connection.prepareStatement(query,
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
 
                 List<Nation> nations = new ArrayList<>();
+
+                ps.setString(1, "%" + searchString + "%");
 
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()){
