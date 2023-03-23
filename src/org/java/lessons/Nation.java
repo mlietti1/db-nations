@@ -1,46 +1,31 @@
 package org.java.lessons;
 
-import java.sql.*;
-import java.util.List;
-import java.util.Scanner;
-
 public class Nation {
+    private String country;
+    private int countryId;
+    private String region;
+    private String continent;
 
-    private final static String URL = System.getenv("DB_URL");
-    private final static String USER = System.getenv("DB_USER");
-    private final static String PASSWORD = System.getenv("DB_PW");
+    public Nation(String country, int countryId, String region, String continent) {
+        this.country = country;
+        this.countryId = countryId;
+        this.region = region;
+        this.continent = continent;
+    }
 
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
+    public String getCountry() {
+        return country;
+    }
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)){
+    public int getCountryId() {
+        return countryId;
+    }
 
-            String query = """
-                    SELECT c.name, c.country_id , r.name, c2.name  FROM countries c\s
-                    JOIN regions r ON r.region_id = c.region_id\s
-                    JOIN continents c2 ON c2.continent_id = r.continent_id\s
-                    ORDER BY c.name;
-                    """;
+    public String getRegion() {
+        return region;
+    }
 
-            try (PreparedStatement ps = connection.prepareStatement(query,
-                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
-
-
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()){
-                        String country = rs.getString("c.name");
-                        int countryId = rs.getInt("c.country_id");
-                        String region = rs.getString("r.name");
-                        String continent = rs.getString("c2.name");
-
-                    }
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+    public String getContinent() {
+        return continent;
     }
 }
